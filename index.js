@@ -62,7 +62,7 @@ app.post('/uploadFile', async(req, res) => {
     const { file } = req.files
     // console.log(req)
     const distDir = Path.join(__dirname, 'files')
-    // await Fs.promises.mkdir(distDir, { recursive: true })
+    await Fs.promises.mkdir(distDir, { recursive: true })
     await file.mv(Path.join(distDir, file.name))
     res.send({
         flag: true,
