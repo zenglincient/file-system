@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主页</title>
+</head>
+<script src="./js/jquery-2.1.4.js"></script>
+<script src="./js/vue.global.js"></script>
+    <!-- import CSS -->
+    <link rel="stylesheet" href="./js/index.css">
+    <!-- import JavaScript -->
+    <script src="./js/element-plus.js"></script>
+<body>
+
+    <div id="app">
+        <el-upload
+            class="upload-demo"
+            action="./uploadFile">
+        <el-button type="primary">传文件</el-button>
+    </el-upload>
+        <h2>列表</h2>
+        <div>
+            <el-input size="large"
+            placeholder="关键字" @input="getList(keyword)" style="width: 50%; margin-right: 10px;" v-model="keyword"></el-input>
+            <el-button  type="primary" @click="getList(keyword)">搜索</el-button>
+        </div>
+        <p v-for="(item, index) in list" :key="index">
+            <el-link :href="`./files/${item.name}`" target="_blank">{{item.name}}</el-link>
+            <el-button @click="deleteFile(item.name)" type="danger">删除</el-button>
+        </p>
+    </div>
+
+    <script>
+
+    const App = {
+            data() {
+                return {
+                    list: [],
+                    keyword: '',
+                    message: "Hello Element Plus",
+                };
+                
+            },
+            mounted() {
+               this.getList();
+            },
+            methods: {
+                getList(keyword) {
+                    const self = this;
+                    $.get('/getSource', {
+                        keyword,
+                    }, function(res) {
+                        console.log(res);
+                        if (res.status === 403) {
+                            location.href = '/login.html';
+                        }
+                        if (res.flag) {
+                            self.list = res.data;
+                        }
+                    });
+                },
+                deleteFile(fileName) {
+                    ElementPlus.ElMessageBox.confirm('确定删除').then(() => {
+                        $.post('/deleteFile', {
+                            fileName: fileName
+                        }, function(res) {
+                            if (res.flag) {
+                                location.reload();
+                            }
+                        });
+                    });
+                }   
+            }
+        };
+        const app = Vue.createApp(App);
+        app.use(ElementPlus);
+        app.mount("#app");
+        </script>
+    </script>
+
+</body>
+</html>

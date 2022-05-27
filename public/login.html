@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script src="./js/jquery-2.1.4.js"></script>
+    <script src="./js/vue.global.js"></script>
+    <!-- import CSS -->
+    <link rel="stylesheet" href="./js/index.css">
+    <!-- import JavaScript -->
+    <script src="./js/element-plus.js"></script>
+    <div id="app">
+        <el-row style="text-align: center">
+                <el-card style="margin: 100px auto">
+                    <el-form>
+                        <el-form-item label="name">
+                            <el-input v-model="username" />
+                          </el-form-item>
+                          <el-form-item label="password">
+                            <el-input type="password" v-model="password" />
+                          </el-form-item>
+                          <el-form-item>
+                            <el-button  type="primary" @click="login">Login</el-button>
+                          </el-form-item>
+                       </el-form>
+                </el-card>
+        </el-row>
+        
+       
+    </div>
+    <script>
+        const App = {
+            el: '#app',
+            data: () => {
+                return {
+                    username: '',
+                    password: ''
+            }
+            },
+            methods: {
+                login(e) {
+                    const self = this
+                    e.preventDefault();
+                    $.ajax({
+                        url: './loginApi',
+                        method: 'post',
+                        data: {
+                            username: self.username,
+                            password: self.password
+                        },
+                        success: function (res) {
+                            if (res.flag) {
+                                
+                                location.href = './index.html';
+                            } else {
+                                alert('登录失败');
+                            }
+                        }
+                    })
+                }
+            }
+        }
+
+    const app = Vue.createApp(App);
+      app.use(ElementPlus);
+      app.mount("#app");
+    </script>
+</body>
+</html>
